@@ -1,0 +1,17 @@
+{
+  "name": "myaddon",
+  "fullname": "My Addon",
+  "version": "0.01.00",
+  "author": "Cool Dude",
+  "authorimage": "",
+  "thumbnail": "",
+  "spreadimage": "",
+  "website": "http://what.com",
+  "subtitle": "A cool myaddon game mode.",
+  "description": "",
+  "features": ["Fun myaddon game mode!"],
+  "playable": true,
+  "isPublic": true,
+  "spreadvideo": "http://google.com/iwishthisexisted.webm",
+  "bundle": "myaddon.zip"
+}
