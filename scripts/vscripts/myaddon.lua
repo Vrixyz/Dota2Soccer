@@ -7,7 +7,7 @@ MAX_LEVEL = 1
 
 -- MyAddonGameMode
 BASE_LEVEL = 2
-TIME_TO_PICK = 10
+TIME_TO_PICK = 5
 PRE_GAME_TIME = 5
 MATCH_LENGTH = 200 -- TODO: Rematch
 
@@ -44,7 +44,7 @@ function MyAddonGameMode:InitGameMode()
 	-- Setup rules
 	GameRules:SetHeroRespawnEnabled( true )
 	GameRules:SetUseUniversalShopMode( true )
-	GameRules:SetSameHeroSelectionEnabled( false )
+	GameRules:SetSameHeroSelectionEnabled( true )
 	GameRules:SetHeroSelectionTime( TIME_TO_PICK )
 	GameRules:SetPreGameTime( PRE_GAME_TIME)
 	GameRules:SetPostGameTime( 60.0 )
@@ -395,10 +395,10 @@ function MyAddonGameMode:getItemByName( hero, name )
 end
 
 function MyAddonGameMode:_thinkState_Prep( dt )
-  if GameRules:State_Get() ~= DOTA_GAMERULES_STATE_GAME_IN_PROGRESS then
-    -- Waiting on the game to start...
-    return
-  end
+    if GameRules:State_Get() ~= DOTA_GAMERULES_STATE_GAME_IN_PROGRESS then
+      -- Waiting on the game to start...
+	  return
+	end
     Log("Round started !")
   	MyAddonGameMode:CreateTimer(DoUniqueString("dothislater"), {
 		endTime =  GameRules:GetGameTime() + MATCH_LENGTH,
