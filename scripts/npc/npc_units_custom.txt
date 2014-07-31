@@ -99,12 +99,12 @@
 	{										
 		// General
 		//----------------------------------------------------------------
-		"Model"						"models/heroes/wisp/wisp.mdl"	// Model.
+		"Model"						"models\props_gameplay\halloween_candy.mdl"	// Model.
 		"Portrait"					"vgui/hud/heroportraits/portrait_wisp"						// Small image for hero selection
-		"BaseClass"					"npc_dota_base"
+		"BaseClass"					"npc_dota_earth_spirit_stone"
 		"SoundSet"					"0"			// Name of sound set.
 		"Level"						"1"
-		"ModelScale"				"1.0"
+		"ModelScale"				"1.5"
 		"MinimapIcon"				"minimap_siege"
 		"MinimapIconSize"			"100"
 		
@@ -133,10 +133,10 @@
 
 		// Bounds
 		//----------------------------------------------------------------
-		"RingRadius"				"50"
+		"RingRadius"				"70"
 		"BoundsHullName"			"DOTA_HULL_SIZE_SMALL"			// Hull type used for navigation/locomotion.
 		"ParticleFile"				"particles/units/heroes/hero_wisp.pcf"
-		"HealthBarOffset"			"250"		// -1 means use the models
+		// "HealthBarOffset"			"100"		// -1 means use the models
 
 		// Bounty
 		//----------------------------------------------------------------
@@ -164,7 +164,7 @@
 		"TeamName"					"DOTA_TEAM_NEUTRALS"							// Team name.
 		"CombatClassAttack"			"DOTA_COMBAT_CLASS_ATTACK_BASIC"
 		"CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_SOFT"
-		"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_BUILDING"
+		"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
 	}	
   
   // myaddon: Goal unit
@@ -367,7 +367,7 @@
 			//"particlefile"				"particles/units/heroes/hero_nyx_assassin.pcf"
 			//"particlefile"				"particles/units/heroes/hero_siren.pcf"
 			//"particlefile"				"particles/units/heroes/hero_keeper_of_the_light.pcf"
-			"particlefile"				"particles/units/heroes/hero_wisp.pcf"
+			//"particlefile"				"particles/units/heroes/hero_wisp.pcf"
 			//"particlefile"				"particles/units/heroes/hero_visage.pcf"
 			//"particlefile"				"particles/units/heroes/hero_slark.pcf"
 			//"particlefile"				"particles/units/heroes/hero_medusa.pcf"
