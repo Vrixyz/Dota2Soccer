@@ -17,3 +17,5 @@ to launch locally :
     dota_wait_for_players_to_load 0;
     dota_wait_for_players_to_load_timeout 10;
     map myaddon;
+
+For more informations about things to come : https://trello.com/b/pSIEX562/dota2soccer

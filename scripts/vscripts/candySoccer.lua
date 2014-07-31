@@ -135,6 +135,7 @@ function CandySoccerGameMode:InitGameMode()
 	
 	goodTeamScore = 0
 	badTeamScore = 0
+	
 	Log('Done loading CandySoccerGameMode!\n\n')
   
 end
@@ -218,11 +219,6 @@ function CandySoccerGameMode:PlayerConnect(keys)
     self.vBots[keys.userid] = 1
   end
 end
-
-local hook = nil
-local attach = 0
-local controlPoints = {}
-local particleEffect = ""
 
 function CandySoccerGameMode:PlayerSay(keys)
   Log('PlayerSay')
@@ -471,15 +467,19 @@ function CandySoccerGameMode:_thinkState_Match( dt )
 		goodTeamScore = goodTeamScore + 1
 		GameMode:SetTopBarTeamValue(DOTA_TEAM_GOODGUYS, goodTeamScore)
 		
-		candySoccer_ball.owner.hero:AddNewModifier( candySoccer_ball.owner.hero, nil , "modifier_legion_commander_duel_damage_boost", {})
+		-- candySoccer_ball.owner.hero:AddNewModifier( candySoccer_ball.owner.hero, nil , "modifier_legion_commander_duel_damage_boost", {})
+		ParticleManager:CreateParticle("legion_commander_duel_winner_rays", PATTACH_OVERHEAD_FOLLOW, candySoccer_ball.owner.hero)
+		ParticleManager:CreateParticle("legion_commander_duel_victory", PATTACH_OVERHEAD_FOLLOW, candySoccer_ball.owner.hero)
+		-- ParticleManager:CreateParticle("legion_commander_duel_victory_text_glow", PATTACH_OVERHEAD_FOLLOW, candySoccer_ball.owner.hero)
 		candySoccer_ball.owner.hero:EmitSound("Hero_LegionCommander.Duel.Victory")
 		self.thinkState = Dynamic_Wrap( CandySoccerGameMode, '_thinkState_WaitForNewRound' )
 		CandySoccerGameMode:CreateTimer(DoUniqueString("newround"), {
 		    endTime = GameRules:GetGameTime() + 5,
 		    useGameTime = true,
 		    callback = function(teamfight, args)
-				candySoccer_ball.owner.hero:RemoveModifierByName("modifier_legion_commander_duel_damage_boost")
+				-- candySoccer_ball.owner.hero:RemoveModifierByName("modifier_legion_commander_duel_damage_boost")
 				CandySoccerGameMode:InitializeRound()
+				self.thinkState = Dynamic_Wrap( CandySoccerGameMode, '_thinkState_Match' )
 			end
 		})
 		

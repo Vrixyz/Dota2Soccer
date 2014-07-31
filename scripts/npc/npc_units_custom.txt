@@ -380,7 +380,7 @@
 			//"particlefile"				"particles/units/heroes/hero_skywrath_mage.pcf"
 			//"particlefile"				"particles/units/heroes/hero_abaddon.pcf"
 			//"particlefile"				"particles/units/heroes/hero_elder_titan.pcf"
-			//"particlefile"				"particles/units/heroes/hero_legion_commander.pcf"
+			"particlefile"				"particles/units/heroes/hero_legion_commander.pcf"
 			//"particlefile"				"particles/units/heroes/hero_ember_spirit.pcf"
 			//"particlefile"				"particles/units/heroes/hero_earth_spirit.pcf"
 			//"particlefile"				"particles/units/heroes/hero_abyssal_underlord.pcf"
