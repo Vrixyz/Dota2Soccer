@@ -1,11 +1,11 @@
 USE_LOBBY=false
 THINK_TIME = 0.1
-ADDON_NAME="MYADDON"
+ADDON_NAME="CANDYSOCCER"
 
 STARTING_GOLD = 500--650
 MAX_LEVEL = 1
 
--- MyAddonGameMode
+-- CandySoccerGameMode
 BASE_LEVEL = 2
 TIME_TO_PICK = 5
 PRE_GAME_TIME = 5
@@ -23,22 +23,22 @@ function Log(msg)
   print ( '['..ADDON_NAME..'] '..msg )
 end
 
-if MyAddonGameMode == nil then
-  Log('creating myaddon game mode' )
-  MyAddonGameMode = {}
-  MyAddonGameMode.szEntityClassName = "myaddon"
-  MyAddonGameMode.szNativeClassName = "dota_base_game_mode"
-  MyAddonGameMode.__index = MyAddonGameMode
+if CandySoccerGameMode == nil then
+  Log('creating CandySoccer game mode' )
+  CandySoccerGameMode = {}
+  CandySoccerGameMode.szEntityClassName = "CandySoccer"
+  CandySoccerGameMode.szNativeClassName = "dota_base_game_mode"
+  CandySoccerGameMode.__index = CandySoccerGameMode
 end
 
-function MyAddonGameMode:new( o )
-  Log('MyAddonGameMode:new' )
+function CandySoccerGameMode:new( o )
+  Log('CandySoccerGameMode:new' )
   o = o or {}
-  setmetatable( o, MyAddonGameMode )
+  setmetatable( o, CandySoccerGameMode )
   return o
 end
 
-function MyAddonGameMode:InitGameMode()
+function CandySoccerGameMode:InitGameMode()
 	Log('Starting to load Barebones gamemode...')
 
 	-- Setup rules
@@ -53,19 +53,19 @@ function MyAddonGameMode:InitGameMode()
 	GameRules:SetGoldPerTick(0)
 	Log('Rules set')
 
-	InitLogFile( "log/myaddon.txt","")
+	InitLogFile( "log/CandySoccer.txt","")
 
 	-- Hooks
-	ListenToGameEvent('entity_killed', Dynamic_Wrap(MyAddonGameMode, 'OnEntityKilled'), self)
-	ListenToGameEvent('player_connect_full', Dynamic_Wrap(MyAddonGameMode, 'AutoAssignPlayer'), self)
-	ListenToGameEvent('player_disconnect', Dynamic_Wrap(MyAddonGameMode, 'CleanupPlayer'), self)
-	ListenToGameEvent('dota_item_purchased', Dynamic_Wrap(MyAddonGameMode, 'ShopReplacement'), self)
-	ListenToGameEvent('player_say', Dynamic_Wrap(MyAddonGameMode, 'PlayerSay'), self)
-	ListenToGameEvent('player_connect', Dynamic_Wrap(MyAddonGameMode, 'PlayerConnect'), self)
-	--ListenToGameEvent('player_info', Dynamic_Wrap(MyAddonGameMode, 'PlayerInfo'), self)
-	ListenToGameEvent('dota_player_used_ability', Dynamic_Wrap(MyAddonGameMode, 'AbilityUsed'), self)
+	ListenToGameEvent('entity_killed', Dynamic_Wrap(CandySoccerGameMode, 'OnEntityKilled'), self)
+	ListenToGameEvent('player_connect_full', Dynamic_Wrap(CandySoccerGameMode, 'AutoAssignPlayer'), self)
+	ListenToGameEvent('player_disconnect', Dynamic_Wrap(CandySoccerGameMode, 'CleanupPlayer'), self)
+	ListenToGameEvent('dota_item_purchased', Dynamic_Wrap(CandySoccerGameMode, 'ShopReplacement'), self)
+	ListenToGameEvent('player_say', Dynamic_Wrap(CandySoccerGameMode, 'PlayerSay'), self)
+	ListenToGameEvent('player_connect', Dynamic_Wrap(CandySoccerGameMode, 'PlayerConnect'), self)
+	--ListenToGameEvent('player_info', Dynamic_Wrap(CandySoccerGameMode, 'PlayerInfo'), self)
+	ListenToGameEvent('dota_player_used_ability', Dynamic_Wrap(CandySoccerGameMode, 'AbilityUsed'), self)
 
-	Convars:RegisterCommand( "command_example", Dynamic_Wrap(MyAddonGameMode, 'ExampleConsoleCommand'), "A console command example", 0 )
+	Convars:RegisterCommand( "command_example", Dynamic_Wrap(CandySoccerGameMode, 'ExampleConsoleCommand'), "A console command example", 0 )
 
 	-- Fill server with fake clients
 	Convars:RegisterCommand('fake', function()
@@ -76,7 +76,7 @@ function MyAddonGameMode:InitGameMode()
         
       self:CreateTimer('assign_fakes', {
         endTime = Time(),
-        callback = function(myaddon, args)
+        callback = function(candySoccer, args)
           for i=0, 9 do
             -- Check if this player is a fake one
             if PlayerResource:IsFakeClient(i) then
@@ -120,33 +120,33 @@ function MyAddonGameMode:InitGameMode()
 
 	Log('Done loading Barebones gamemode!\n\n')
 	
-	-- MyAddonGameMode : now custom initialization
+	-- CandySoccerGameMode : now custom initialization
 
-	myaddon_ball = CreateUnitByName('npc_myaddon_ball', Vector(0, 0, 0), true, nil, nil, DOTA_TEAM_NOTEAM)
-	if myaddon_ball then
-		Physics:Unit(myaddon_ball)
-		myaddon_ball.Slide()
-		myaddon_ball:SetNavCollisionType (PHYSICS_NAV_BOUNCE)
+	candySoccer_ball = CreateUnitByName('npc_candySoccer_ball', Vector(0, 0, 0), true, nil, nil, DOTA_TEAM_NOTEAM)
+	if candySoccer_ball then
+		Physics:Unit(candySoccer_ball)
+		candySoccer_ball.Slide()
+		candySoccer_ball:SetNavCollisionType (PHYSICS_NAV_BOUNCE)
 	end
-	goalGood = CreateUnitByName('npc_myaddon_goal', Vector(-2500, 0, 0), true, nil, nil, DOTA_TEAM_NOTEAM)
-	goalBad = CreateUnitByName('npc_myaddon_goal', Vector(2500, 0, 0), true, nil, nil, DOTA_TEAM_NOTEAM)
+	goalGood = CreateUnitByName('npc_candySoccer_goal', Vector(-2500, 0, 0), true, nil, nil, DOTA_TEAM_NOTEAM)
+	goalBad = CreateUnitByName('npc_candySoccer_goal', Vector(2500, 0, 0), true, nil, nil, DOTA_TEAM_NOTEAM)
 	
-	self.thinkState = Dynamic_Wrap( MyAddonGameMode, '_thinkState_Prep' )
+	self.thinkState = Dynamic_Wrap( CandySoccerGameMode, '_thinkState_Prep' )
 	
 	goodTeamScore = 0
 	badTeamScore = 0
-	Log('Done loading MyAddonGameMode!\n\n')
+	Log('Done loading CandySoccerGameMode!\n\n')
   
 end
 
-function MyAddonGameMode:unStunPlayer(player)
+function CandySoccerGameMode:unStunPlayer(player)
 	if player.hero:HasModifier("modifier_stunned") then
 		player.hero:RemoveModifierByName("modifier_stunned")
 		Log("unstunning hero")
 	end
 end
 
-function MyAddonGameMode:CaptureGameMode()
+function CandySoccerGameMode:CaptureGameMode()
   if GameMode == nil then
     -- Set GameMode parameters
     GameMode = GameRules:GetGameModeEntity()		
@@ -168,46 +168,46 @@ function MyAddonGameMode:CaptureGameMode()
     GameRules:SetHeroMinimapIconSize( 300 )
 
     Log('Beginning Think' ) 
-    GameMode:SetContextThink("BarebonesThink", Dynamic_Wrap( MyAddonGameMode, 'Think' ), 0.1 )
+    GameMode:SetContextThink("BarebonesThink", Dynamic_Wrap( CandySoccerGameMode, 'Think' ), 0.1 )
   end
 end
 
-function MyAddonGameMode:AbilityUsed(keys)
+function CandySoccerGameMode:AbilityUsed(keys)
   Log('AbilityUsed')
   PrintTable(keys)
   
-  -- MyAddonGameMode coding of abilities
+  -- CandySoccerGameMode coding of abilities
   
-  if (keys["abilityname"] == "myaddon_kick_ball") then
+  if (keys["abilityname"] == "candySoccer_kick_ball") then
 	Log("We tried to kick!")
 	local hero = self.vPlayers[keys["player"] - 1].hero
-	if (myaddon_ball == nil) or (hero == nil) then
+	if (candySoccer_ball == nil) or (hero == nil) then
 		return
 	end
 
-	local distance = hero:GetAbsOrigin() - myaddon_ball:GetAbsOrigin()
+	local distance = hero:GetAbsOrigin() - candySoccer_ball:GetAbsOrigin()
 	if distance:Length() < 250 then
 		Log("Kicking !")
-		Log("cursorPosition: " .. tostring(hero:GetCursorPosition()) .. " ; ballPosition: " .. tostring(myaddon_ball:GetAbsOrigin()))
-		local distanceToKick = hero:GetCursorPosition() - myaddon_ball:GetAbsOrigin()
+		Log("cursorPosition: " .. tostring(hero:GetCursorPosition()) .. " ; ballPosition: " .. tostring(candySoccer_ball:GetAbsOrigin()))
+		local distanceToKick = hero:GetCursorPosition() - candySoccer_ball:GetAbsOrigin()
 		local direction = (distanceToKick * 2)
-		myaddon_ball:AddPhysicsVelocity(direction)
-		myaddon_ball.owner = self.vPlayers[keys["player"] - 1]
+		candySoccer_ball:AddPhysicsVelocity(direction)
+		candySoccer_ball.owner = self.vPlayers[keys["player"] - 1]
 	end	
   end
 end
 
 -- Cleanup a player when they leave
-function MyAddonGameMode:CleanupPlayer(keys)
+function CandySoccerGameMode:CleanupPlayer(keys)
   Log('Player Disconnected ' .. tostring(keys.userid))
 end
 
-function MyAddonGameMode:CloseServer()
+function CandySoccerGameMode:CloseServer()
   -- Just exit
   SendToServerConsole('exit')
 end
 
-function MyAddonGameMode:PlayerConnect(keys)
+function CandySoccerGameMode:PlayerConnect(keys)
   Log('PlayerConnect')
   PrintTable(keys)
   
@@ -224,7 +224,7 @@ local attach = 0
 local controlPoints = {}
 local particleEffect = ""
 
-function MyAddonGameMode:PlayerSay(keys)
+function CandySoccerGameMode:PlayerSay(keys)
   Log('PlayerSay')
   PrintTable(keys)
   
@@ -252,10 +252,10 @@ function MyAddonGameMode:PlayerSay(keys)
   
 end
 
-function MyAddonGameMode:AutoAssignPlayer(keys)
+function CandySoccerGameMode:AutoAssignPlayer(keys)
   Log('AutoAssignPlayer')
   PrintTable(keys)
-  MyAddonGameMode:CaptureGameMode()
+  CandySoccerGameMode:CaptureGameMode()
   
   local entIndex = keys.index+1
   -- The Player entity of the joining user
@@ -305,7 +305,7 @@ function MyAddonGameMode:AutoAssignPlayer(keys)
   --Autoassign player
   self:CreateTimer('assign_player_'..entIndex, {
   endTime = Time(),
-  callback = function(myaddon, args)
+  callback = function(candySoccer, args)
     -- Make sure the game has started
     if GameRules:State_Get() >= DOTA_GAMERULES_STATE_PRE_GAME then
       -- Assign a hero to a fake client
@@ -329,7 +329,7 @@ function MyAddonGameMode:AutoAssignPlayer(keys)
         }
         self.vPlayers[playerID] = heroTable
 		
-		-- MyAddonGameMode:
+		-- CandySoccerGameMode:
 
 			-- if not heroEntity:HasModifier("modifier_stunned") then
 				-- heroEntity:AddNewModifier( heroEntity, nil , "modifier_stunned", {})
@@ -351,7 +351,7 @@ function MyAddonGameMode:AutoAssignPlayer(keys)
 })
 end
 
-function MyAddonGameMode:LoopOverPlayers(callback)
+function CandySoccerGameMode:LoopOverPlayers(callback)
   for k, v in pairs(self.vPlayers) do
     -- Validate the player
     if IsValidEntity(v.hero) then
@@ -363,7 +363,7 @@ function MyAddonGameMode:LoopOverPlayers(callback)
   end
 end
 
-function MyAddonGameMode:ShopReplacement( keys )
+function CandySoccerGameMode:ShopReplacement( keys )
   Log('ShopReplacement' )
   PrintTable(keys)
 
@@ -379,7 +379,7 @@ function MyAddonGameMode:ShopReplacement( keys )
   
 end
 
-function MyAddonGameMode:getItemByName( hero, name )
+function CandySoccerGameMode:getItemByName( hero, name )
   -- Find item by slot
   for i=0,11 do
     local item = hero:GetItemInSlot( i )
@@ -394,13 +394,13 @@ function MyAddonGameMode:getItemByName( hero, name )
   return nil
 end
 
-function MyAddonGameMode:_thinkState_Prep( dt )
+function CandySoccerGameMode:_thinkState_Prep( dt )
     if GameRules:State_Get() ~= DOTA_GAMERULES_STATE_GAME_IN_PROGRESS then
       -- Waiting on the game to start...
 	  return
 	end
     Log("Round started !")
-  	MyAddonGameMode:CreateTimer(DoUniqueString("dothislater"), {
+  	CandySoccerGameMode:CreateTimer(DoUniqueString("dothislater"), {
 		endTime =  GameRules:GetGameTime() + MATCH_LENGTH,
 		useGameTime = true,
 		callback = function()
@@ -417,76 +417,76 @@ function MyAddonGameMode:_thinkState_Prep( dt )
 			end
 		end
 	})
-  self.thinkState = Dynamic_Wrap( MyAddonGameMode, '_thinkState_Match' )
+  self.thinkState = Dynamic_Wrap( CandySoccerGameMode, '_thinkState_Match' )
   self:InitializeRound()
 end
 
-function MyAddonGameMode:InitializeRound()
+function CandySoccerGameMode:InitializeRound()
 	Log("Initializing round...")
 	Log("gametime: " .. GameRules:GetGameTime())
 	Log("servertime: " .. Time())
-	MyAddonGameMode:LoopOverPlayers(function(player)
+	CandySoccerGameMode:LoopOverPlayers(function(player)
 		if player.hero:HasModifier("modifier_stunned") then
 			player.hero:RemoveModifierByName("modifier_stunned")
 		end
 		player.hero:RespawnHero(false, false, false)
-		myaddon_ball:SetAbsOrigin(Vector(0,0,0))
-		myaddon_ball:SetPhysicsVelocity(Vector(0,0,0))
+		candySoccer_ball:SetAbsOrigin(Vector(0,0,0))
+		candySoccer_ball:SetPhysicsVelocity(Vector(0,0,0))
 	end)
 end
 
-function MyAddonGameMode:passiveKick(player, player_id)
+function CandySoccerGameMode:passiveKick(player, player_id)
 	local hero = player.hero
-	if (myaddon_ball == nil) or (hero == nil) then
+	if (candySoccer_ball == nil) or (hero == nil) then
 		return
 	end
 
-	local distance = hero:GetAbsOrigin() - myaddon_ball:GetAbsOrigin()
+	local distance = hero:GetAbsOrigin() - candySoccer_ball:GetAbsOrigin()
 	if distance:Length() < 150 then
 		Log("collision with a unit")
 		local direction = - (distance:Normalized())
-		myaddon_ball:AddPhysicsVelocity(direction * 200)
-		myaddon_ball.owner = player
+		candySoccer_ball:AddPhysicsVelocity(direction * 200)
+		candySoccer_ball.owner = player
 	end	
 end
 
-function MyAddonGameMode:_thinkState_Match( dt )
-	if not myaddon_ball then
+function CandySoccerGameMode:_thinkState_Match( dt )
+	if not candySoccer_ball then
 		return
 	end
     -- Bind "self" in the callback
     local function _passiveKick(...)
         return self:passiveKick(...)
     end
-	MyAddonGameMode:LoopOverPlayers(_passiveKick)
+	CandySoccerGameMode:LoopOverPlayers(_passiveKick)
 	
-	local distanceGoalBad = myaddon_ball:GetAbsOrigin() - goalBad:GetAbsOrigin()
+	local distanceGoalBad = candySoccer_ball:GetAbsOrigin() - goalBad:GetAbsOrigin()
 	if (distanceGoalBad:Length() < 200) then
 		Log("GOAL!!!")
-		myaddon_ball.owner.hero:IncrementKills(1)
+		candySoccer_ball.owner.hero:IncrementKills(1)
 		goodTeamScore = goodTeamScore + 1
 		GameMode:SetTopBarTeamValue(DOTA_TEAM_GOODGUYS, goodTeamScore)
 		
-		MyAddonGameMode:InitializeRound()
-		-- myaddon_ball:Remove()
-		-- myaddon_ball = nil
+		CandySoccerGameMode:InitializeRound()
+		-- candySoccer_ball:Remove()
+		-- candySoccer_ball = nil
 	end
 	
-	local distanceGoalGood = myaddon_ball:GetAbsOrigin() - goalGood:GetAbsOrigin()
+	local distanceGoalGood = candySoccer_ball:GetAbsOrigin() - goalGood:GetAbsOrigin()
 	if (distanceGoalGood:Length() < 200) then
 		Log("GOAL!!!")
-		myaddon_ball.owner.hero:IncrementKills(1)
+		candySoccer_ball.owner.hero:IncrementKills(1)
 		badTeamScore = badTeamScore + 1
 		GameMode:SetTopBarTeamValue(DOTA_TEAM_BADGUYS, badTeamScore)
 		
-		MyAddonGameMode:InitializeRound()
-		-- myaddon_ball:Remove()
-		-- myaddon_ball = nil
+		CandySoccerGameMode:InitializeRound()
+		-- candySoccer_ball:Remove()
+		-- candySoccer_ball = nil
 	end
 	return
 end
 
-function MyAddonGameMode:Think()
+function CandySoccerGameMode:Think()
   -- If the game's over, it's over.
   if GameRules:State_Get() >= DOTA_GAMERULES_STATE_POST_GAME then
     return
@@ -494,16 +494,16 @@ function MyAddonGameMode:Think()
 
   -- Track game time, since the dt passed in to think is actually wall-clock time not simulation time.
   local now = GameRules:GetGameTime()
-  if MyAddonGameMode.t0 == nil then
-    MyAddonGameMode.t0 = now
+  if CandySoccerGameMode.t0 == nil then
+    CandySoccerGameMode.t0 = now
   end
-  local dt = now - MyAddonGameMode.t0
-  MyAddonGameMode.t0 = now
+  local dt = now - CandySoccerGameMode.t0
+  CandySoccerGameMode.t0 = now
 
-  MyAddonGameMode:thinkState( dt )
+  CandySoccerGameMode:thinkState( dt )
 
   -- Process timers
-  for k,v in pairs(MyAddonGameMode.timers) do
+  for k,v in pairs(CandySoccerGameMode.timers) do
     local bUseGameTime = false
     if v.useGameTime and v.useGameTime == true then
       bUseGameTime = true;
@@ -511,10 +511,10 @@ function MyAddonGameMode:Think()
     -- Check if the timer has finished
     if (bUseGameTime and GameRules:GetGameTime() > v.endTime) or (not bUseGameTime and Time() > v.endTime) then
       -- Remove from timers list
-      MyAddonGameMode.timers[k] = nil
+      CandySoccerGameMode.timers[k] = nil
 
       -- Run the callback
-      local status, nextCall = pcall(v.callback, MyAddonGameMode, v)
+      local status, nextCall = pcall(v.callback, CandySoccerGameMode, v)
 
       -- Make sure it worked
       if status then
@@ -522,12 +522,12 @@ function MyAddonGameMode:Think()
         if nextCall then
           -- Change it's end time
           v.endTime = nextCall
-          MyAddonGameMode.timers[k] = v
+          CandySoccerGameMode.timers[k] = v
         end
 
       else
         -- Nope, handle the error
-        MyAddonGameMode:HandleEventError('Timer', k, nextCall)
+        CandySoccerGameMode:HandleEventError('Timer', k, nextCall)
       end
     end
   end
@@ -535,7 +535,7 @@ function MyAddonGameMode:Think()
   return THINK_TIME
 end
 
-function MyAddonGameMode:HandleEventError(name, event, err)
+function CandySoccerGameMode:HandleEventError(name, event, err)
   -- This gets fired when an event throws an error
 
   -- Log to console
@@ -557,7 +557,7 @@ function MyAddonGameMode:HandleEventError(name, event, err)
   end
 end
 
-function MyAddonGameMode:CreateTimer(name, args)
+function CandySoccerGameMode:CreateTimer(name, args)
   --[[
   args: {
   endTime = Time you want this timer to end: Time() + 30 (for 30 seconds from now),
@@ -584,12 +584,12 @@ function MyAddonGameMode:CreateTimer(name, args)
   self.timers[name] = args
 end
 
-function MyAddonGameMode:RemoveTimer(name)
+function CandySoccerGameMode:RemoveTimer(name)
   -- Remove this timer
   self.timers[name] = nil
 end
 
-function MyAddonGameMode:RemoveTimers(killAll)
+function CandySoccerGameMode:RemoveTimers(killAll)
   local timers = {}
 
   -- If we shouldn't kill all timers
@@ -608,7 +608,7 @@ function MyAddonGameMode:RemoveTimers(killAll)
   self.timers = timers
 end
 
-function MyAddonGameMode:ExampleConsoleCommand()
+function CandySoccerGameMode:ExampleConsoleCommand()
   print( '******* Example Console Command ***************' )
   local cmdPlayer = Convars:GetCommandClient()
   if cmdPlayer then
@@ -621,7 +621,7 @@ function MyAddonGameMode:ExampleConsoleCommand()
   print( '*********************************************' )
 end
 
-function MyAddonGameMode:OnEntityKilled( keys )
+function CandySoccerGameMode:OnEntityKilled( keys )
   Log('OnEntityKilled Called' )
   PrintTable( keys )
   
@@ -675,10 +675,10 @@ function dealDamage(source, target, damage)
   unit:SetForwardVector(diff:Normalized())
   unit:CastAbilityOnTarget(target, ability, 0 )
   
-  MyAddonGameMode:CreateTimer(DoUniqueString("damage"), {
+  CandySoccerGameMode:CreateTimer(DoUniqueString("damage"), {
     endTime = GameRules:GetGameTime() + 0.3,
     useGameTime = true,
-    callback = function(myaddon, args)
+    callback = function(candySoccer, args)
       unit:Destroy()
       if target:GetHealth() == hp and hp ~= 0 and damage ~= 0 then
         Log("WARNING: dealDamage did no damage: " .. hp)

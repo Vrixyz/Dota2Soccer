@@ -4,7 +4,7 @@
 {
 	"Version"		"1"
 	
-	"myaddon_kick_ball"
+	"candySoccer_kick_ball"
 	{
 
 		// General
@@ -74,7 +74,7 @@
 		}
 	}
 
-	"myaddon_debug_createBall"
+	"candySoccer_debug_createBall"
 	{
 		// General
 		//-------------------------------------------------------------------------------------------------------------

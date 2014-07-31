@@ -95,7 +95,7 @@
 	}
 	
 	// myaddon: Ball unit
-	"npc_myaddon_ball"
+	"npc_candySoccer_ball"
 	{										
 		// General
 		//----------------------------------------------------------------
@@ -168,7 +168,7 @@
 	}	
   
   // myaddon: Goal unit
-	"npc_myaddon_goal"
+	"npc_candySoccer_goal"
 	{
 		// General
 		//----------------------------------------------------------------
