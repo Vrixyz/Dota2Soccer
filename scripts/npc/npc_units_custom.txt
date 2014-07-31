@@ -489,7 +489,7 @@
 			//"soundfile"				"scripts/game_sounds_heroes/game_sounds_skywrath_mage.txt"
 			//"soundfile"				"scripts/game_sounds_heroes/game_sounds_abaddon.txt"
 			//"soundfile"				"scripts/game_sounds_heroes/game_sounds_elder_titan.txt"
-			//"soundfile"				"scripts/game_sounds_heroes/game_sounds_legion_commander.txt"
+			"soundfile"				"scripts/game_sounds_heroes/game_sounds_legion_commander.txt"
 			//"soundfile"				"scripts/game_sounds_heroes/game_sounds_ember_spirit.txt"
 			//"soundfile"				"scripts/game_sounds_heroes/game_sounds_earth_spirit.txt"
 			//"soundfile"				"scripts/game_sounds_heroes/game_sounds_abyssal_underlord.txt"

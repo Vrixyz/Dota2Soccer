@@ -450,6 +450,10 @@ function CandySoccerGameMode:passiveKick(player, player_id)
 	end	
 end
 
+function CandySoccerGameMode:_thinkState_WaitForNewRound( dt )
+
+ end
+
 function CandySoccerGameMode:_thinkState_Match( dt )
 	if not candySoccer_ball then
 		return
@@ -467,7 +471,19 @@ function CandySoccerGameMode:_thinkState_Match( dt )
 		goodTeamScore = goodTeamScore + 1
 		GameMode:SetTopBarTeamValue(DOTA_TEAM_GOODGUYS, goodTeamScore)
 		
-		CandySoccerGameMode:InitializeRound()
+		candySoccer_ball.owner.hero:AddNewModifier( candySoccer_ball.owner.hero, nil , "modifier_legion_commander_duel_damage_boost", {})
+		candySoccer_ball.owner.hero:EmitSound("Hero_LegionCommander.Duel.Victory")
+		self.thinkState = Dynamic_Wrap( CandySoccerGameMode, '_thinkState_WaitForNewRound' )
+		CandySoccerGameMode:CreateTimer(DoUniqueString("newround"), {
+		    endTime = GameRules:GetGameTime() + 5,
+		    useGameTime = true,
+		    callback = function(teamfight, args)
+				candySoccer_ball.owner.hero:RemoveModifierByName("modifier_legion_commander_duel_damage_boost")
+				CandySoccerGameMode:InitializeRound()
+			end
+		})
+		
+		-- CandySoccerGameMode:InitializeRound()
 		-- candySoccer_ball:Remove()
 		-- candySoccer_ball = nil
 	end
