@@ -10,6 +10,9 @@ BASE_LEVEL = 2
 TIME_TO_PICK = 5
 PRE_GAME_TIME = 5
 MATCH_LENGTH = 200 -- TODO: Rematch
+GRAVITY_AMOUNT = -15
+TAKEOFF_VELOCITY = 500 / 30
+FRICTION_MULTIPLIER = 0.04
 
 -- Fill this table up with the required XP per level if you want to change it
 XP_PER_LEVEL_TABLE = {}
@@ -185,7 +188,7 @@ function CandySoccerGameMode:AbilityUsed(keys)
 		Log("Kicking !")
 		Log("cursorPosition: " .. tostring(hero:GetCursorPosition()) .. " ; ballPosition: " .. tostring(candySoccer_ball:GetAbsOrigin()))
 		local distanceToKick = hero:GetCursorPosition() - candySoccer_ball:GetAbsOrigin()
-		local direction = (distanceToKick * 2)
+		local direction = (distanceToKick * 1.5)
 		candySoccer_ball:AddPhysicsVelocity(direction)
 		candySoccer_ball.owner = self.vPlayers[keys["player"] - 1]
 	end	
@@ -420,9 +423,46 @@ function CandySoccerGameMode:InitializeRound()
 	if candySoccer_ball then
 		Physics:Unit(candySoccer_ball)
 		candySoccer_ball.Slide()
-		-- candySoccer_ball.LockToGround(true) -- boring :o :(
-		-- candySoccer_ball:AddPhysicsAcceleration(Vector(0,0,-0.2)) -- that would be gravity ?
+		candySoccer_ball:SetGroundBehavior(PHYSICS_GROUND_ABOVE)
+		candySoccer_ball:SetPhysicsAcceleration(Vector(0,0,GRAVITY_AMOUNT))
 		candySoccer_ball:SetNavCollisionType (PHYSICS_NAV_BOUNCE)
+		candySoccer_ball:SetSlideMultiplier(0.5)
+		candySoccer_ball:SetPhysicsFriction (FRICTION_MULTIPLIER)
+        local groundPos = GetGroundPosition(candySoccer_ball:GetAbsOrigin(), candySoccer_ball)
+        candySoccer_ball:SetAbsOrigin(groundPos)
+		-- logic for jumping...
+		local ballTable = {
+			ball = candySoccer_ball,
+			bFlying = false,
+			fLastFriction = FRICTION_MULTIPLIER,
+		}
+		-- candySoccer_ball:OnPhysicsFrame(function(unit)
+		    -- local pos = unit:GetAbsOrigin()
+            -- local groundPos = GetGroundPosition(pos, unit)
+			-- if not ballTable.bFlying and pos.z > groundPos.z and unit.vVelocity:Length() > TAKEOFF_VELOCITY then
+				-- Log("ball flying ! " .. unit.vSlideVelocity.z)
+				-- unit:PreventDI(true)
+				-- unit.vSlideVelocity = Vector(0, 0, pos.z - groundPos.z)
+				-- unit:AddPhysicsVelocity(unit.vSlideVelocity)
+				-- ballTable.fLastFriction = unit:GetPhysicsFriction()
+				-- unit:SetPhysicsFriction(0)
+				-- unit:AddNewModifier(unit, nil, "modifier_pudge_meat_hook", {})
+				-- ballTable.bFlying = true
+			-- elseif ballTable.bFlying and pos.z <= groundPos.z then
+				-- Log("ball landing.")
+				-- unit:PreventDI(false)
+				-- if ballTable.fLastFriction == 0 then
+					-- unit:SetPhysicsFriction(FRICTION_MULTIPLIER)
+					-- ballTable.fLastFriction = FRICTION_MULTIPLIER
+				-- else
+					-- unit:SetPhysicsFriction(FRICTION_MULTIPLIER)
+					-- unit:SetPhysicsFriction(ballTable.fLastFriction)
+				-- end
+				-- ballTable.bFlying = false
+				-- unit:RemoveModifierByName("modifier_pudge_meat_hook")
+			-- end
+		-- end)
+	
 		local function popParticles()
 			if (candySoccer_ball == nil) then
 				return
@@ -467,11 +507,12 @@ function CandySoccerGameMode:passiveKick(dt, player, player_id)
 	if (candySoccer_ball == nil) or (hero == nil) then
 		return
 	end
+	
 	local distance = hero:GetAbsOrigin() - candySoccer_ball:GetAbsOrigin()
 	if distance:Length() < 150 then
 		Log("collision with a unit")
 		local direction = - (distance:Normalized())
-		candySoccer_ball:AddPhysicsVelocity(direction * 200)
+		candySoccer_ball:AddPhysicsVelocity(direction * 150)
 		candySoccer_ball.owner = player
 	end	
 end
