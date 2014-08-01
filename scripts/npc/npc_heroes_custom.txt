@@ -63,7 +63,7 @@
 		"SoundSet"				"0"
 		"Ability1"				"candySoccer_kick_ball"
 		"Ability2"				"reflex_empty2"
-		"Ability3"				"frostivus_wraith_king_hellfire_blast"
+		"Ability3"				""
 		"Ability4"				""
 		"Ability5"				""
 		"Ability6"				""

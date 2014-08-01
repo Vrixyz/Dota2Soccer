@@ -462,6 +462,26 @@ function CandySoccerGameMode:_thinkState_WaitForNewRound( dt )
 
  end
 
+ function CandySoccerGameMode:celebrateFor(player)
+	ParticleManager:CreateParticle("legion_commander_duel_winner_rays", PATTACH_OVERHEAD_FOLLOW, player.hero)
+	ParticleManager:CreateParticle("legion_commander_duel_victory", PATTACH_OVERHEAD_FOLLOW, player.hero)
+	player.hero:EmitSound("Hero_LegionCommander.Duel.Victory")
+ end
+ 
+ function CandySoccerGameMode:initializeWaitForNewRound()
+	self.thinkState = Dynamic_Wrap( CandySoccerGameMode, '_thinkState_WaitForNewRound' )
+	candySoccer_ball:Remove()
+	CandySoccerGameMode:CreateTimer(DoUniqueString("newround"), {
+		endTime = GameRules:GetGameTime() + 5,
+		useGameTime = true,
+		callback = function(teamfight, args)
+			-- candySoccer_ball.owner.hero:RemoveModifierByName("modifier_legion_commander_duel_damage_boost")
+			CandySoccerGameMode:InitializeRound()
+			self.thinkState = Dynamic_Wrap( CandySoccerGameMode, '_thinkState_Match' )
+		end
+	})
+ end
+ 
 function CandySoccerGameMode:_thinkState_Match( dt )
 	if not candySoccer_ball then
 		return
@@ -478,35 +498,18 @@ function CandySoccerGameMode:_thinkState_Match( dt )
 		candySoccer_ball.owner.hero:IncrementKills(1)
 		goodTeamScore = goodTeamScore + 1
 		GameMode:SetTopBarTeamValue(DOTA_TEAM_GOODGUYS, goodTeamScore)
-		-- candySoccer_ball.owner.hero:AddNewModifier( candySoccer_ball.owner.hero, nil , "modifier_legion_commander_duel_damage_boost", {})
-		ParticleManager:CreateParticle("legion_commander_duel_winner_rays", PATTACH_OVERHEAD_FOLLOW, candySoccer_ball.owner.hero)
-		ParticleManager:CreateParticle("legion_commander_duel_victory", PATTACH_OVERHEAD_FOLLOW, candySoccer_ball.owner.hero)
-		-- ParticleManager:CreateParticle("legion_commander_duel_victory_text_glow", PATTACH_OVERHEAD_FOLLOW, candySoccer_ball.owner.hero)
-		candySoccer_ball.owner.hero:EmitSound("Hero_LegionCommander.Duel.Victory")
-		self.thinkState = Dynamic_Wrap( CandySoccerGameMode, '_thinkState_WaitForNewRound' )
-		candySoccer_ball:Remove()
-		CandySoccerGameMode:CreateTimer(DoUniqueString("newround"), {
-		    endTime = GameRules:GetGameTime() + 5,
-		    useGameTime = true,
-		    callback = function(teamfight, args)
-				-- candySoccer_ball.owner.hero:RemoveModifierByName("modifier_legion_commander_duel_damage_boost")
-				CandySoccerGameMode:InitializeRound()
-				self.thinkState = Dynamic_Wrap( CandySoccerGameMode, '_thinkState_Match' )
-			end
-		})
-		
-		-- CandySoccerGameMode:InitializeRound()
-		-- candySoccer_ball:Remove()
-		-- candySoccer_ball = nil
+
+		CandySoccerGameMode:celebrateFor(candySoccer_ball.owner)
+		CandySoccerGameMode:initializeWaitForNewRound()
+
 	elseif ((candySoccer_ball:GetAbsOrigin() - goalGood:GetAbsOrigin()):Length() < 200) then
 		Log("GOAL!!!")
 		candySoccer_ball.owner.hero:IncrementKills(1)
 		badTeamScore = badTeamScore + 1
 		GameMode:SetTopBarTeamValue(DOTA_TEAM_BADGUYS, badTeamScore)
 		
-		CandySoccerGameMode:InitializeRound()
-		-- candySoccer_ball:Remove()
-		-- candySoccer_ball = nil
+		CandySoccerGameMode:celebrateFor(candySoccer_ball.owner)
+		CandySoccerGameMode:initializeWaitForNewRound()
 	end
 	return
 end
