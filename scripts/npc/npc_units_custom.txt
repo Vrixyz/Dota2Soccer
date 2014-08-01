@@ -349,7 +349,7 @@
 			//"particlefile"				"particles/units/heroes/hero_ursa.pcf"
 			//"particlefile"				"particles/units/heroes/hero_spirit_breaker.pcf"
 			//"particlefile"				"particles/units/heroes/hero_gyrocopter.pcf"
-			//"particlefile"				"particles/units/heroes/hero_alchemist.pcf"
+			"particlefile"				"particles/units/heroes/hero_alchemist.pcf"
 			//"particlefile"				"particles/units/heroes/hero_invoker.pcf"
 			//"particlefile"				"particles/units/heroes/hero_silencer.pcf"
 			//"particlefile"				"particles/units/heroes/hero_obsidian_destroyer.pcf"

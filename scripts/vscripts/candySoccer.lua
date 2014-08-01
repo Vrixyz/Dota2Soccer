@@ -122,12 +122,6 @@ function CandySoccerGameMode:InitGameMode()
 	
 	-- CandySoccerGameMode : now custom initialization
 
-	candySoccer_ball = CreateUnitByName('npc_candySoccer_ball', Vector(0, 0, 0), true, nil, nil, DOTA_TEAM_NOTEAM)
-	if candySoccer_ball then
-		Physics:Unit(candySoccer_ball)
-		candySoccer_ball.Slide()
-		candySoccer_ball:SetNavCollisionType (PHYSICS_NAV_BOUNCE)
-	end
 	goalGood = CreateUnitByName('npc_candySoccer_goal', Vector(-2500, 0, 0), true, nil, nil, DOTA_TEAM_NOTEAM)
 	goalBad = CreateUnitByName('npc_candySoccer_goal', Vector(2500, 0, 0), true, nil, nil, DOTA_TEAM_NOTEAM)
 	
@@ -420,7 +414,25 @@ end
 function CandySoccerGameMode:InitializeRound()
 	Log("Initializing round...")
 	Log("gametime: " .. GameRules:GetGameTime())
-	Log("servertime: " .. Time())
+	
+	-- create a new ball
+	candySoccer_ball = CreateUnitByName('npc_candySoccer_ball', Vector(0, 0, 0), true, nil, nil, DOTA_TEAM_NOTEAM)
+	if candySoccer_ball then
+		Physics:Unit(candySoccer_ball)
+		candySoccer_ball.Slide()
+		candySoccer_ball:SetNavCollisionType (PHYSICS_NAV_BOUNCE)
+		local function popParticles()
+			ParticleManager:CreateParticle("legion_commander_odds_buff_hero_trail", PATTACH_WORLDORIGIN, candySoccer_ball)
+					CandySoccerGameMode:CreateTimer(DoUniqueString("dothislater"), {
+			endTime =  GameRules:GetGameTime() + 0.2,
+			useGameTime = true,
+			callback = popParticles
+		})
+		end
+		-- popParticles()
+		
+	end
+	
 	CandySoccerGameMode:LoopOverPlayers(function(player)
 		if player.hero:HasModifier("modifier_stunned") then
 			player.hero:RemoveModifierByName("modifier_stunned")
@@ -466,13 +478,13 @@ function CandySoccerGameMode:_thinkState_Match( dt )
 		candySoccer_ball.owner.hero:IncrementKills(1)
 		goodTeamScore = goodTeamScore + 1
 		GameMode:SetTopBarTeamValue(DOTA_TEAM_GOODGUYS, goodTeamScore)
-		
 		-- candySoccer_ball.owner.hero:AddNewModifier( candySoccer_ball.owner.hero, nil , "modifier_legion_commander_duel_damage_boost", {})
 		ParticleManager:CreateParticle("legion_commander_duel_winner_rays", PATTACH_OVERHEAD_FOLLOW, candySoccer_ball.owner.hero)
 		ParticleManager:CreateParticle("legion_commander_duel_victory", PATTACH_OVERHEAD_FOLLOW, candySoccer_ball.owner.hero)
 		-- ParticleManager:CreateParticle("legion_commander_duel_victory_text_glow", PATTACH_OVERHEAD_FOLLOW, candySoccer_ball.owner.hero)
 		candySoccer_ball.owner.hero:EmitSound("Hero_LegionCommander.Duel.Victory")
 		self.thinkState = Dynamic_Wrap( CandySoccerGameMode, '_thinkState_WaitForNewRound' )
+		candySoccer_ball:Remove()
 		CandySoccerGameMode:CreateTimer(DoUniqueString("newround"), {
 		    endTime = GameRules:GetGameTime() + 5,
 		    useGameTime = true,
@@ -486,10 +498,7 @@ function CandySoccerGameMode:_thinkState_Match( dt )
 		-- CandySoccerGameMode:InitializeRound()
 		-- candySoccer_ball:Remove()
 		-- candySoccer_ball = nil
-	end
-	
-	local distanceGoalGood = candySoccer_ball:GetAbsOrigin() - goalGood:GetAbsOrigin()
-	if (distanceGoalGood:Length() < 200) then
+	elseif ((candySoccer_ball:GetAbsOrigin() - goalGood:GetAbsOrigin()):Length() < 200) then
 		Log("GOAL!!!")
 		candySoccer_ball.owner.hero:IncrementKills(1)
 		badTeamScore = badTeamScore + 1
