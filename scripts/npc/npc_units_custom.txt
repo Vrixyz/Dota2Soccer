@@ -7,11 +7,13 @@
 	{
 		// General
 		//
-		"BaseClass"					"npc_dota_base_additive"	// Class of entity of link to.
+		"BaseClass"					"npc_dota_earth_spirit_stone"	// Class of entity of link to.
 		"Model"						"models/development/invisiblebox.mdl"	// Model.
 		"SoundSet"					"Creep_Good_Range"					// Name of sound set.
 		"Level"						"0"
 		"UnitLabel"					"healing_ward"
+		"MinimapIcon"				"minimap_siege"
+		"MinimapIconSize"			"1"
 		
 		// Abilities
 		//----------------------------------------------------------------
@@ -65,7 +67,7 @@
 
 		// Movement
 		//----------------------------------------------------------------
-		"MovementCapabilities"		"DOTA_UNIT_CAP_MOVE_GROUND"			// Type of locomotion - ground, air
+		"MovementCapabilities"		"DOTA_UNIT_CAP_MOVE_FLY"			// Type of locomotion - ground, air
 		"MovementSpeed"				"450"		// Speed
 		"MovementTurnRate"			"1.0"		// Turning rate.
 		"FollowRange"				"250"		// Distance to keep when following
@@ -135,7 +137,7 @@
 		//----------------------------------------------------------------
 		"RingRadius"				"70"
 		"BoundsHullName"			"DOTA_HULL_SIZE_SMALL"			// Hull type used for navigation/locomotion.
-		"ParticleFile"				"particles/units/heroes/hero_wisp.pcf"
+		"ParticleFile"				"particles/units/heroes/hero_alchemist.pcf"
 		// "HealthBarOffset"			"100"		// -1 means use the models
 
 		// Bounty
@@ -167,7 +169,7 @@
 		"UnitRelationshipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
 	}	
   
-  // myaddon: Goal unit
+  	// myaddon: Goal unit
 	"npc_candySoccer_goal"
 	{
 		// General
@@ -177,8 +179,8 @@
 		"SoundSet"					"0"			// Name of sound set.
 		"Level"						"1"
 		"ModelScale"				"2"
-		"MinimapIcon"				"minimap_siege"
-		"MinimapIconSize"			"100"
+		"MinimapIcon"				"minimap_candybucket"
+		"MinimapIconSize"			"500"
 		
 		// Abilities
 		//----------------------------------------------------------------

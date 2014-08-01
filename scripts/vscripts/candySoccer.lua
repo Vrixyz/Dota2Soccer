@@ -420,16 +420,35 @@ function CandySoccerGameMode:InitializeRound()
 	if candySoccer_ball then
 		Physics:Unit(candySoccer_ball)
 		candySoccer_ball.Slide()
+		-- candySoccer_ball.LockToGround(true) -- boring :o :(
+		-- candySoccer_ball:AddPhysicsAcceleration(Vector(0,0,-0.2)) -- that would be gravity ?
 		candySoccer_ball:SetNavCollisionType (PHYSICS_NAV_BOUNCE)
 		local function popParticles()
-			ParticleManager:CreateParticle("legion_commander_odds_buff_hero_trail", PATTACH_WORLDORIGIN, candySoccer_ball)
-					CandySoccerGameMode:CreateTimer(DoUniqueString("dothislater"), {
-			endTime =  GameRules:GetGameTime() + 0.2,
-			useGameTime = true,
-			callback = popParticles
-		})
+			if (candySoccer_ball == nil) then
+				return
+			end
+			local ballVel = candySoccer_ball:GetPhysicsVelocity ()
+			if ballVel.x < -50 or ballVel.y < -50 or ballVel.z < -50 or ballVel.x > 50 or ballVel.y > 50 or ballVel.z > 50 then
+				local particle_attach = CreateUnitByName("npc_dummy_unit", candySoccer_ball:GetAbsOrigin(), false, nil, nil, DOTA_TEAM_NOTEAM)
+				ParticleManager:CreateParticle("legion_commander_odds_buff_hero_trail", PATTACH_WORLDORIGIN, particle_attach)
+				CandySoccerGameMode:CreateTimer(DoUniqueString("dothislater"), {
+					endTime =  GameRules:GetGameTime() + 0.3,
+					useGameTime = true,
+					callback = function()
+						if particle_attach == nil then
+							Log("particle_attach is nil !")
+						end
+						particle_attach:Remove()
+					end
+				})
+			end
+			CandySoccerGameMode:CreateTimer(DoUniqueString("dothislater"), {
+				endTime =  GameRules:GetGameTime() + 0.01,
+				useGameTime = true,
+				callback = popParticles
+			})
 		end
-		-- popParticles()
+		popParticles()
 		
 	end
 	
@@ -443,12 +462,11 @@ function CandySoccerGameMode:InitializeRound()
 	end)
 end
 
-function CandySoccerGameMode:passiveKick(player, player_id)
+function CandySoccerGameMode:passiveKick(dt, player, player_id)
 	local hero = player.hero
 	if (candySoccer_ball == nil) or (hero == nil) then
 		return
 	end
-
 	local distance = hero:GetAbsOrigin() - candySoccer_ball:GetAbsOrigin()
 	if distance:Length() < 150 then
 		Log("collision with a unit")
@@ -471,6 +489,7 @@ function CandySoccerGameMode:_thinkState_WaitForNewRound( dt )
  function CandySoccerGameMode:initializeWaitForNewRound()
 	self.thinkState = Dynamic_Wrap( CandySoccerGameMode, '_thinkState_WaitForNewRound' )
 	candySoccer_ball:Remove()
+	candySoccer_ball = nil
 	CandySoccerGameMode:CreateTimer(DoUniqueString("newround"), {
 		endTime = GameRules:GetGameTime() + 5,
 		useGameTime = true,
@@ -488,7 +507,7 @@ function CandySoccerGameMode:_thinkState_Match( dt )
 	end
     -- Bind "self" in the callback
     local function _passiveKick(...)
-        return self:passiveKick(...)
+        return self:passiveKick(dt, ...)
     end
 	CandySoccerGameMode:LoopOverPlayers(_passiveKick)
 	
@@ -501,7 +520,6 @@ function CandySoccerGameMode:_thinkState_Match( dt )
 
 		CandySoccerGameMode:celebrateFor(candySoccer_ball.owner)
 		CandySoccerGameMode:initializeWaitForNewRound()
-
 	elseif ((candySoccer_ball:GetAbsOrigin() - goalGood:GetAbsOrigin()):Length() < 200) then
 		Log("GOAL!!!")
 		candySoccer_ball.owner.hero:IncrementKills(1)
