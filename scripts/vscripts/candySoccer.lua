@@ -10,7 +10,7 @@ BASE_LEVEL = 2
 TIME_TO_PICK = 5
 PRE_GAME_TIME = 5
 MATCH_LENGTH = 200 -- TODO: Rematch
-GRAVITY_AMOUNT = -15
+GRAVITY_AMOUNT = -80
 TAKEOFF_VELOCITY = 500 / 30
 FRICTION_MULTIPLIER = 0.04
 
@@ -189,6 +189,7 @@ function CandySoccerGameMode:AbilityUsed(keys)
 		Log("cursorPosition: " .. tostring(hero:GetCursorPosition()) .. " ; ballPosition: " .. tostring(candySoccer_ball:GetAbsOrigin()))
 		local distanceToKick = hero:GetCursorPosition() - candySoccer_ball:GetAbsOrigin()
 		local direction = (distanceToKick * 1.5)
+		direction.z = hero:GetAbsOrigin().z -- avoid clicking in weird place to shoot strangely
 		candySoccer_ball:AddPhysicsVelocity(direction)
 		candySoccer_ball.owner = self.vPlayers[keys["player"] - 1]
 	end	
@@ -419,7 +420,7 @@ function CandySoccerGameMode:InitializeRound()
 	Log("gametime: " .. GameRules:GetGameTime())
 	
 	-- create a new ball
-	candySoccer_ball = CreateUnitByName('npc_candySoccer_ball', Vector(0, 0, 0), true, nil, nil, DOTA_TEAM_NOTEAM)
+	candySoccer_ball = CreateUnitByName('npc_candySoccer_ball', Vector(0, 0, 250), true, nil, nil, DOTA_TEAM_NOTEAM)
 	if candySoccer_ball then
 		Physics:Unit(candySoccer_ball)
 		candySoccer_ball.Slide()

@@ -441,19 +441,26 @@ function Physics:Unit(unit)
         newVelocity.z = 0
       elseif unit.nLockToGround == PHYSICS_GROUND_ABOVE then
         local groundPos = GetGroundPosition(newPos, unit)
-        if groundPos.z > newPos.z then
-			Log("diff between ground and ball: " .. groundPos.z - newPos.z)
-			if groundPos.z - newPos.z < 128 then -- avoid too big jump
+		Log("ground: " .. groundPos.z .. " ; and ball: " .. newPos.z .. " ; unit.bFlying: " .. tostring(unit.bFlying))
+        if groundPos.z >= newPos.z then
+			if unit.bFlying then
+				Log("Landing")
+				unit.bFlying = false
+				unit.fFriction = unit.fFriction_onGround
+				newVelocity.z = 0
+				-- TODO: code landing logic (friction again, allow control, etc.)
+			elseif groundPos.z - newPos.z < 100 then
 				newVelocity.z = groundPos.z - newPos.z
-			else
+			else -- avoid too big jump (that means it's either a wall or it haw been teleported under the floor)
 				newVelocity.z = 0
 			end
-			if unit.nFlying then
-				-- TODO: code landing logic (friction again, allow control, etc.)
-			end
 		    newPos = groundPos
-        elseif (groundPos.z < newPos.z) then
+        elseif unit.bFlying == false then
+			Log("Taking off")
 			-- TODO: code takeoff logic (no friction, block control, etc.)
+			unit.bFlying = true
+			unit.fFriction_onGround = unit.fFriction
+			unit.fFriction = 0
 		end
       end
       
@@ -767,6 +774,7 @@ function Physics:Unit(unit)
   unit.nStuckTimeout = 5
   unit.nStuckFrames = 0
   unit.fBounceMultiplier = 1.0
+  unit.bFlying = false
 end
 
 Physics:start()
