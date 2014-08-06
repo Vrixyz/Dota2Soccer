@@ -397,6 +397,29 @@ function Physics:Unit(unit)
     return unit.fBounceMultiplier
   end
   
+  function unit:GetNormalAtPosition(position) -- position should be on the ground already
+	local normal = Vector(0,0,1) -- expecting flat ground
+	if (position.z % 64) ~= 0 then -- we're on a slope (or position arg is incorrect)
+		local positionUp = Vector(position.x, position.y, position.z)
+		positionUp.y = positionUp.y + (position.y % 64) -- check upward if that's a direction of the slope
+		local groundPositionUp = GetGroundPosition(positionUp, unit)
+		if  groundPositionUp.z < position.z then
+			normal.y = 1
+		elseif groundPositionUp.z > position.z then
+			normal.y = -1
+		end
+		local positionRight = Vector(position.x, position.y, position.z)
+		positionRight.x = positionRight.x + (position.x % 64) -- check rightward if that's a direction of the slope
+		local groundPositionRight = GetGroundPosition(positionRight, unit)
+		if  groundPositionRight.z < position.z then
+			normal.x = 1
+		elseif groundPositionRight.z > position.z then
+			normal.x = -1
+		end
+	end
+	return normal:Normalized()
+  end
+  
   unit.PhysicsTimerName = DoUniqueString('phys')
   Physics:CreateTimer(unit.PhysicsTimerName, {
     endTime = GameRules:GetGameTime(),
@@ -452,19 +475,23 @@ function Physics:Unit(unit)
 				else
 					newVelocity.z = - newVelocity.z * unit.fBounceMultiplier
 				end
-				-- TODO: code landing logic (friction again, allow control, etc.)
 			elseif groundPos.z - newPos.z < 100 then
 				newVelocity.z = groundPos.z - newPos.z
 			else -- avoid too big jump (that means it's either a wall or it haw been teleported under the floor)
 				newVelocity.z = 0
 			end
 		    newPos = groundPos
+			-- calculate sliding
+			-- Expecting gravity being an acceleration negative z
+			local normal = unit:GetNormalAtPosition(newPos)
+			newVelocity.x = newVelocity.x + normal.x
+			newVelocity.y = newVelocity.y + normal.y
         elseif unit.bFlying == false then
 			-- Log("Taking off")
 			-- TODO: code takeoff logic (no friction, block control, etc.)
 			unit.bFlying = true
 			unit.fFriction_onGround = unit.fFriction
-			unit.fFriction = 0
+			unit.fFriction = unit.fFriction * 0.3 -- 0 is too small
 		end
       end
       

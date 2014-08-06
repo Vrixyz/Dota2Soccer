@@ -171,13 +171,13 @@ function CandySoccerGameMode:CaptureGameMode()
 end
 
 function CandySoccerGameMode:AbilityUsed(keys)
-  Log('AbilityUsed')
-  PrintTable(keys)
+  -- Log('AbilityUsed')
+  -- PrintTable(keys)
   
   -- CandySoccerGameMode coding of abilities
   
   if (keys["abilityname"] == "candySoccer_kick_ball") then
-	Log("We tried to kick!")
+	-- Log("We tried to kick!")
 	local hero = self.vPlayers[keys["player"] - 1].hero
 	if (candySoccer_ball == nil) or (hero == nil) then
 		return
@@ -185,8 +185,8 @@ function CandySoccerGameMode:AbilityUsed(keys)
 
 	local distance = hero:GetAbsOrigin() - candySoccer_ball:GetAbsOrigin()
 	if distance:Length() < 250 then
-		Log("Kicking !")
-		Log("cursorPosition: " .. tostring(hero:GetCursorPosition()) .. " ; ballPosition: " .. tostring(candySoccer_ball:GetAbsOrigin()))
+		-- Log("Kicking !")
+		-- Log("cursorPosition: " .. tostring(hero:GetCursorPosition()) .. " ; ballPosition: " .. tostring(candySoccer_ball:GetAbsOrigin()))
 		local distanceToKick = hero:GetCursorPosition() - candySoccer_ball:GetAbsOrigin()
 		local direction = (distanceToKick * 1.5)
 		direction.z = hero:GetAbsOrigin().z -- avoid clicking in weird place to shoot strangely
@@ -428,7 +428,7 @@ function CandySoccerGameMode:InitializeRound()
 		candySoccer_ball:SetPhysicsAcceleration(Vector(0,0,GRAVITY_AMOUNT))
 		candySoccer_ball:SetNavCollisionType (PHYSICS_NAV_BOUNCE)
 		candySoccer_ball:SetBounceMultiplier(0.7)
-		candySoccer_ball:SetSlideMultiplier(0.6)
+		candySoccer_ball:SetSlideMultiplier(0.7)
 		candySoccer_ball:SetPhysicsFriction (FRICTION_MULTIPLIER)
         local groundPos = GetGroundPosition(candySoccer_ball:GetAbsOrigin(), candySoccer_ball)
         candySoccer_ball:SetAbsOrigin(groundPos)
@@ -512,7 +512,7 @@ function CandySoccerGameMode:passiveKick(dt, player, player_id)
 	
 	local distance = hero:GetAbsOrigin() - candySoccer_ball:GetAbsOrigin()
 	if distance:Length() < 150 then
-		Log("collision with a unit")
+		-- Log("collision with a unit")
 		local direction = - (distance:Normalized())
 		candySoccer_ball:AddPhysicsVelocity(direction * 150)
 		candySoccer_ball.owner = player
@@ -557,6 +557,7 @@ function CandySoccerGameMode:_thinkState_Match( dt )
 	local distanceGoalBad = candySoccer_ball:GetAbsOrigin() - goalBad:GetAbsOrigin()
 	if (distanceGoalBad:Length() < 200) then
 		Log("GOAL!!!")
+		Log(goalBad:GetAbilityCount())
 		candySoccer_ball.owner.hero:IncrementKills(1)
 		goodTeamScore = goodTeamScore + 1
 		GameMode:SetTopBarTeamValue(DOTA_TEAM_GOODGUYS, goodTeamScore)
