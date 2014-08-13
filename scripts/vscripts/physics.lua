@@ -21,7 +21,7 @@ function Physics:new( o )
   return o
 end
 
-function Physics:start()
+function Physics:start(GameMode)
   self.timers = {}
   self.reflectGroups = {}
   self.blockGroups = {}
@@ -30,8 +30,7 @@ function Physics:start()
   self.offsetX = nil
   self.offsetY = nil
   
-  local wspawn = Entities:FindByClassname(nil, 'worldspawn')
-  wspawn:SetContextThink("PhysicsThink", Dynamic_Wrap( Physics, 'Think' ), PHYSICS_THINK )
+  GameMode:SetThink( "Think", self, "PhysicsThink", PHYSICS_THINK )
 end
 
 function Physics:Think()
@@ -807,5 +806,3 @@ function Physics:Unit(unit)
   unit.fBounceMultiplier = 1.0
   unit.bFlying = false
 end
-
-Physics:start()

@@ -20,5 +20,101 @@
 
 "CustomEvents"
 {
+	"candysoccer_show_round_end_summary"
+	{
+		"nRoundNumber"				"short"
+		"nIdPlayerGoal"				"short"
+		"nTeamScoring"				"short"
+
+		"Player_0_HeroName"			"string"
+		"Player_0_PassReceived"			"short"
+		"Player_0_PassSucceed"			"short"
+		"Player_0_BallLost"			"short"
+		"Player_0_BallTaken"			"short"
+		// "Player_0_AvgTimePossession"		"short"
+
+		"Player_1_HeroName"			"string"
+		"Player_1_PassReceived"			"short"
+		"Player_1_PassSucceed"			"short"
+		"Player_1_BallLost"			"short"
+		"Player_1_BallTaken"			"short"
+		// "Player_1_AvgTimePossession"		"short"
+
+		"Player_1_HeroName"			"string"
+		"Player_1_PassReceived"			"short"
+		"Player_1_PassSucceed"			"short"
+		"Player_1_BallLost"			"short"
+		"Player_1_BallTaken"			"short"
+		// "Player_1_AvgTimePossession"		"short"
+
+		"Player_1_HeroName"			"string"
+		"Player_1_PassReceived"			"short"
+		"Player_1_PassSucceed"			"short"
+		"Player_1_BallLost"			"short"
+		"Player_1_BallTaken"			"short"
+		// "Player_1_AvgTimePossession"		"short"
+
+		"Player_1_HeroName"			"string"
+		"Player_1_PassReceived"			"short"
+		"Player_1_PassSucceed"			"short"
+		"Player_1_BallLost"			"short"
+		"Player_1_BallTaken"			"short"
+		// "Player_1_AvgTimePossession"		"short"
+
+		"Player_1_HeroName"			"string"
+		"Player_1_PassReceived"			"short"
+		"Player_1_PassSucceed"			"short"
+		"Player_1_BallLost"			"short"
+		"Player_1_BallTaken"			"short"
+		// "Player_1_AvgTimePossession"		"short"
+	}
+
+	"holdout_victory_message"
+	{
+	}
+
+	"holdout_end"
+	{
+		"victory"						"bool"
+		"flVoteDuration"				"float"
+		"nRoundNumber"					"short"
+		"nRoundDifficulty"				"long"
+		"roundName"						"string"
+
+		"Player_0_HeroName"				"string"
+		"Player_0_FrostyPoints"			"long"
+		"Player_0_GoldFrostyPoints"		"long"
+
+		"Player_1_HeroName"				"string"
+		"Player_1_FrostyPoints"			"long"
+		"Player_1_GoldFrostyPoints"		"long"
+
+		"Player_2_HeroName"				"string"
+		"Player_2_FrostyPoints"			"long"
+		"Player_2_GoldFrostyPoints"		"long"
+
+		"Player_3_HeroName"				"string"
+		"Player_3_FrostyPoints"			"long"
+		"Player_3_GoldFrostyPoints"		"long"
+
+		"Player_4_HeroName"				"string"
+		"Player_4_FrostyPoints"			"long"
+		"Player_4_GoldFrostyPoints"		"long"
+	}
+
+	"holdout_restart_vote"
+	{
+		"bWantRestart"					"bool"
+	}
+
+	"holdout_restart_vote_end"
+	{
+
+	}
+
+	"holdout_starting_next_difficulty"
+	{
+		"nRoundDifficulty" 				"long"
+	}
 }
 

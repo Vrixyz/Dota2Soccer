@@ -1,0 +1,20 @@
+"dota_candysoccer"
+{
+	"PrepTimeBetweenRounds"			"10"
+
+	"BallSpawn"
+	{
+		// make a neutral, and one for each team to give an advantage after being scored
+		"1" // we don't read this ; expect the first one to be neutral ?
+		{
+			"SpawnerName"			"ballSpawnerNeutral"
+		}
+	}
+	"Round1"
+	{
+		"Ball"
+		{
+			"NPCName"				"npc_candySoccer_ball"
+		}
+	}
+}

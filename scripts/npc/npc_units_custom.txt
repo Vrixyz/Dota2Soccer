@@ -103,7 +103,7 @@
 		//----------------------------------------------------------------
 		"Model"						"models\props_gameplay\halloween_candy.mdl"	// Model.
 		"Portrait"					"vgui/hud/heroportraits/portrait_wisp"						// Small image for hero selection
-		"BaseClass"					"npc_dota_earth_spirit_stone"
+		"BaseClass"					"npc_dota_earth_spirit_stone"	
 		"SoundSet"					"0"			// Name of sound set.
 		"Level"						"1"
 		"ModelScale"				"1.5"
