@@ -11,9 +11,20 @@ function CCandySoccerGameSpawner:ReadConfiguration( name, kv, gameRound )
 	self._dependentSpawners = {}
 
 	self._szName = name
+  self._szUnitName = kv.UnitName or ""
 	self._szNPCClassName = kv.NPCName or ""
+  self._szUnitNameToTeleport = kv.UnitNameToTeleport or ""
 	self._szSpawnerName = kv.SpawnerName or ""
   self._bDontOffsetSpawn = ( tonumber( kv.DontOffsetSpawn or 0 ) ~= 0 )
+  if kv.Team ~= nil then
+    if kv.Team == "DOTA_TEAM_BADGUYS" then
+      self._nTeam = DOTA_TEAM_BADGUYS
+    elseif kv.Team == "DOTA_TEAM_GOODGUYS" then
+      self._nTeam = DOTA_TEAM_GOODGUYS
+    else
+      self._nTeam = DOTA_TEAM_NOTEAM
+    end
+  end
 end
 
 
@@ -32,13 +43,15 @@ function CCandySoccerGameSpawner:Begin()
 		end
 		self._vecSpawnLocation = entSpawner:GetAbsOrigin()
 	end
-  self:DoSpawn()
+  return self:DoSpawn()
 end
 
 function CCandySoccerGameSpawner:End()
-  if self._gameRound._entBall ~= nil then
-    self._gameRound._entBall:SetVelocity(Vector(0,0,0))
-    self._gameRound._entBall:SetOrigin(self._vHiddenPosition)
+  if self._szNPCClassName == "" then
+    self._entUnit:SetVelocity(Vector(0,0,0))
+    self._entUnit:SetOrigin(self._vHiddenPosition)
+  else
+    self._entUnit:RemoveSelf()
   end
 end
 
@@ -74,26 +87,22 @@ function CCandySoccerGameSpawner:DoSpawn()
 	if not vBaseSpawnLocation then return end
 
   local szNPCClassToSpawn = self._szNPCClassName
-  if bIsChampion and self._szChampionNPCClassName ~= "" then
-    szNPCClassToSpawn = self._szChampionNPCClassName
-  end
+
 
   local vSpawnLocation = vBaseSpawnLocation
   if not self._bDontOffsetSpawn then
     vSpawnLocation = vSpawnLocation + RandomVector( RandomFloat( 0, 200 ) )
   end
-
-  --local entUnitDisplay = CreateUnitByName( szNPCClassToSpawn, vSpawnLocation, true, nil, nil, DOTA_TEAM_NOTEAM ) -- TODO: noteam shows its position, should make neutral, but then it goes back to position...
-  local entUnit = Entities:FindByName(nil, "ball")
-  self._vHiddenPosition = entUnit:GetOrigin()
-  entUnit:SetOrigin(vSpawnLocation)
-  --entUnitDisplay:SetParent(entUnit, "punk")
-  if entUnit then
-    -- if self._gameRound._entBall ~= nil then
-      -- self._gameRound._entBall.RemoveSelf()
-    -- end
-    self._gameRound._entBall = entUnit
+  
+  if szNPCClassToSpawn ~= "" then
+    self._entUnit = CreateUnitByName( szNPCClassToSpawn, vSpawnLocation, true, nil, nil, self._nTeam ) -- TODO: noteam shows its position, should make neutral, but then it goes back to position...
+    self._entUnit:SetUnitName(self._szUnitName)
+  else
+    self._entUnit = Entities:FindByName(nil, "ball")
+    self._vHiddenPosition = self._entUnit:GetOrigin()
+    self._entUnit:SetOrigin(vSpawnLocation)
   end
+  return self._entUnit -- TODO: get that return and do logic there
 end
 
 

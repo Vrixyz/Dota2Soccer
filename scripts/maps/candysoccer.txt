@@ -2,19 +2,45 @@
 {
 	"PrepTimeBetweenRounds"			"10"
 
-	"BallSpawn"
+	"Spawners"
 	{
 		// make a neutral, and one for each team to give an advantage after being scored
 		"1" // we don't read this ; expect the first one to be neutral ?
 		{
-			"SpawnerName"			"ballSpawnerNeutral"
+			"SpawnerName"		"ballSpawnerNeutral"
+		}
+		"2"
+		{
+			"SpawnerName"		"goalSpawner1"
+		}
+		"3"
+		{
+			"SpawnerName"		"goalSpawner2"
 		}
 	}
 	"Round1"
 	{
 		"Ball"
 		{
-			"NPCName"				"npc_candySoccer_ball"
+			// "NPCName"				"npc_candySoccer_ball" // not used
+			"UnitNameToTeleport"			"ball"
+			"SpawnerName"				"ballSpawnerNeutral"
+		}
+		
+		"GoalGood"
+		{
+			"UnitName"				"goodGoal"
+			"NPCName"				"npc_candySoccer_goal"
+			"SpawnerName"				"goalSpawner1"
+			"Team"					"DOTA_TEAM_GOODGUYS"
+		}
+		
+		"GoalBad"
+		{
+			"UnitName"				"badGoal"
+			"NPCName"				"npc_candySoccer_goal"
+			"SpawnerName"				"goalSpawner2"
+			"Team"					"DOTA_TEAM_BADGUYS"
 		}
 	}
 }

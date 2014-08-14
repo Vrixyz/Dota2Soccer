@@ -47,7 +47,7 @@ function Precache( context )
     -- PrecacheResource( "soundfile", "*.vsndevts", context )
     -- PrecacheResource( "particle", "*.vpcf", context )
     -- PrecacheResource( "particle_folder", "particles/folder", context )
-    PrecacheResource( "particle", "particles/items2_fx/veil_of_discord.vpcf", context )	
+    PrecacheResource( "particle", "particles/units/heroes/hero_legion_commander/legion_commander_duel_victory.vpcf", context )	
 	
 end
 
@@ -97,8 +97,8 @@ function CAddonTemplateGameMode:InitGameMode()
 	-- ListenToGameEvent('dota_player_used_ability', Dynamic_Wrap(CAddonTemplateGameMode, 'AbilityUsed'), self)
   ListenToGameEvent( "game_rules_state_change", Dynamic_Wrap( CAddonTemplateGameMode, "OnGameRulesStateChange" ), self )
   
-	goalGood = CreateUnitByName('npc_candySoccer_goal', Vector(-2000, 0, 0), true, nil, nil, DOTA_TEAM_NOTEAM)
-	goalBad = CreateUnitByName('npc_candySoccer_goal', Vector(2000, 0, 0), true, nil, nil, DOTA_TEAM_NOTEAM)
+	-- self._entGoalGood = CreateUnitByName('npc_candySoccer_goal', Vector(-2000, 0, 0), true, nil, nil, DOTA_TEAM_NOTEAM)
+	-- self._entGoalBad = CreateUnitByName('npc_candySoccer_goal', Vector(2000, 0, 0), true, nil, nil, DOTA_TEAM_NOTEAM)
   goodTeamScore = 0
   badTeamScore = 0
 end
@@ -109,7 +109,7 @@ function CAddonTemplateGameMode:_ReadGameConfiguration()
 
 	self._flPrepTimeBetweenRounds = tonumber( kv.PrepTimeBetweenRounds or 5 )
   self._flMatchTimeLeft = tonumber( kv.MatchLength or MATCH_LENGTH )
-	self:_ReadBallSpawnsConfiguration( kv["BallSpawn"] )
+	self:_ReadBallSpawnsConfiguration( kv["Spawners"] )
   self:_ReadRoundConfigurations( kv )
 end
 
@@ -257,19 +257,7 @@ function CAddonTemplateGameMode:InitializeRound()
 	self._currentRound = self._vRounds[ 1 ]
 	self._currentRound:Begin()
   self.candySoccer_ball = self._currentRound._entBall
-	-- create a new ball
-	if self.candySoccer_ball == nil then
-    self.candySoccer_ball = Entities:FindByName(nil, "ball")
-    if self.candySoccer_ball == nil then
-      Log("couldn't find ball !")
-      return
-    end
-    -- self.candySoccer_ball = CreateUnitByName('npc_candySoccer_ball', Vector(0, -100, 256), true, nil, nil, DOTA_TEAM_NOTEAM)
-
-    CAddonTemplateGameMode:LoopOverPlayers(function(player)
-      player:GetAssignedHero():RespawnHero(false, false, false)
-    end)
-  end
+	
   self._bInitialized = true
 end
 
@@ -375,10 +363,9 @@ function CAddonTemplateGameMode:_thinkState_Match( dt )
     end
   end
   
-	local distanceGoalBad = self.candySoccer_ball:GetAbsOrigin() - goalBad:GetAbsOrigin()
+	local distanceGoalBad = self.candySoccer_ball:GetAbsOrigin() - self._currentRound._entGoalBad:GetAbsOrigin()
 	if (distanceGoalBad:Length() < 200) then
 		Log("GOAL!!!")
-		Log(goalBad:GetAbilityCount())
 		self.candySoccer_ball.owner:GetAssignedHero():IncrementKills(1)
     goodTeamScore = goodTeamScore + 1
 		GameMode:SetTopBarTeamValue(DOTA_TEAM_GOODGUYS, goodTeamScore)
@@ -388,7 +375,7 @@ function CAddonTemplateGameMode:_thinkState_Match( dt )
     self._currentRound = nil
     self._nRoundNumber = self._nRoundNumber + 1
     self:_InitializeWaitForNewRound()
-	elseif ((self.candySoccer_ball:GetAbsOrigin() - goalGood:GetAbsOrigin()):Length() < 200) then
+	elseif ((self.candySoccer_ball:GetAbsOrigin() - self._currentRound._entGoalGood:GetAbsOrigin()):Length() < 200) then
 		Log("GOAL!!!")
 		self.candySoccer_ball.owner:GetAssignedHero():IncrementKills(1)
 		badTeamScore = badTeamScore + 1

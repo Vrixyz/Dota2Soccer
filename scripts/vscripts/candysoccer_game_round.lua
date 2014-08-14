@@ -13,7 +13,7 @@ function CCandySoccerGameRound:ReadConfiguration( kv, gameMode, roundNumber )
 
 	self._vSpawners = {}
 	for k, v in pairs( kv ) do
-		if type( v ) == "table" and v.NPCName then
+		if type( v ) == "table" and v.SpawnerName then
 			local spawner = CCandySoccerGameSpawner()
 			spawner:ReadConfiguration( k, v, self )
 			self._vSpawners[ k ] = spawner
@@ -48,9 +48,13 @@ function CCandySoccerGameRound:Begin()
 		}
 	end
 
-	for _, spawner in pairs( self._vSpawners ) do
-		spawner:Begin()
-	end
+  self._entBall = self._vSpawners["Ball"]:Begin()
+  self._entGoalGood = self._vSpawners["GoalGood"]:Begin()
+  self._entGoalBad = self._vSpawners["GoalBad"]:Begin()
+	--for _, spawner in pairs( self._vSpawners ) do
+    
+		--spawner:Begin()
+	--end
 end
 
 
